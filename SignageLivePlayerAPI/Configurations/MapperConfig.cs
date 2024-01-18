@@ -10,6 +10,8 @@ namespace SignageLivePlayerAPI.Configurations
         public MapperConfig()
         {
             CreateMap<Player, PlayerCreateDTO>().ReverseMap();
+            CreateMap<Player, PlayerUpdateDTO>().ReverseMap();
+            CreateMap<Player, PlayerDTO>().ReverseMap();
         }
     }
 }

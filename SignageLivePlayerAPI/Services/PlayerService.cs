@@ -74,6 +74,7 @@ namespace SignageLivePlayerAPI.Services
             }
             else
             {
+                player.DateCreated = players[playerToUpdateIndex].DateCreated;
                 player.DateModified = DateTime.UtcNow;
                 players[playerToUpdateIndex] = player;
 

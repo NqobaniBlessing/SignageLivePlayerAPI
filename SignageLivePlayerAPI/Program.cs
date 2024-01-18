@@ -1,3 +1,4 @@
+using Serilog;
 using SignageLivePlayerAPI.Configurations;
 using SignageLivePlayerAPI.Endpoints;
 using SignageLivePlayerAPI.Services;
@@ -12,6 +13,12 @@ builder.Services.AddAutoMapper(typeof(MapperConfig));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.File("Logs/signagelive_player_api.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Logging.AddSerilog(logger);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
