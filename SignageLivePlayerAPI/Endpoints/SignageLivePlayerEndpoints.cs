@@ -1,4 +1,6 @@
-﻿using SignageLivePlayerAPI.Models;
+﻿using AutoMapper;
+using SignageLivePlayerAPI.Models;
+using SignageLivePlayerAPI.Models.DTOs;
 using SignageLivePlayerAPI.Services.Interfaces;
 
 namespace SignageLivePlayerAPI.Endpoints
@@ -7,38 +9,53 @@ namespace SignageLivePlayerAPI.Endpoints
     {
         public static void MapSignageLivePLayerEndpoints(this WebApplication app)
         {
-            app.MapPost("players", (IPlayerService playerService, Player player) =>
+            app.MapPost("api/players", (IPlayerService playerService, IMapper mapper, PlayerCreateDTO playerDTO) =>
             {
-                var result = playerService.CreatePlayer(player);
+                var player = mapper.Map<Player>(playerDTO);
+                var result = mapper.Map<PlayerCreateDTO>(playerService.CreatePlayer(player));
 
-                return result;
+                return Results.Created("api/players", result);
             });
 
-            app.MapGet("players", (IPlayerService playerService) =>
+            app.MapGet("api/players", (IPlayerService playerService, IMapper mapper) =>
             {
-                var result = playerService.GetAll();
+                var result = mapper.Map<List<PlayerDTO>>(playerService.GetAll());
 
-                return result;
+                return Results.Ok(result);
             });
 
-            app.MapGet("players/{id}", (IPlayerService playerService, int id) =>
+            app.MapGet("api/players/{id}", (IPlayerService playerService, int id, IMapper mapper) =>
             {
-                var result = playerService.Get(id);
+                var result = mapper.Map<PlayerDTO>(playerService.Get(id));
 
-                return result;
+                if (result is null)
+                    return Results.NotFound();
+
+                return Results.Ok(result);
             });
 
-            app.MapPut("players/{id}", (IPlayerService playerService, int id, Player player) =>
+            app.MapPut("api/players/{id}", (IPlayerService playerService, int id, PlayerUpdateDTO playerDTO,
+                IMapper mapper) =>
             {
+                var player = mapper.Map<Player>(playerDTO);
                 var result = playerService.Update(player, id);
 
-                return result;
+                if (result is null)
+                    return Results.NotFound();
+
+                return Results.Ok(result);
             });
 
-            app.MapDelete("players/{id}", (IPlayerService playerService, int id) =>
+            app.MapDelete("api/players/{id}", (IPlayerService playerService, int id) =>
             {
                 var player = playerService.Get(id);
+
+                if (player is null)
+                    return Results.NotFound();
+
                 playerService.Remove(player, id);
+
+                return Results.NoContent();
             });
         }
     }

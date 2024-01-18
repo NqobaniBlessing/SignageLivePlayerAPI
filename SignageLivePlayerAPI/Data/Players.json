@@ -1,0 +1,30 @@
+[
+  {
+    "Id": 1,
+    "UniqueId": "8d593e2f-fd13-4c67-8feb-737f2168f9e0",
+    "Name": "TV",
+    "SiteAddress1": "Test Address",
+    "SiteAddress2": "",
+    "SiteTown": "Haverhill",
+    "SiteCounty": "Suffolk",
+    "SitePostCode": "CB9 087",
+    "SiteCountry": "United Kingdom",
+    "CheckInFrequency": "Monthly",
+    "DateCreated": "2024-01-18T04:16:10.4847353Z",
+    "DateModified": "0001-01-01T00:00:00"
+  },
+{
+  "Id": 2,
+  "UniqueId": "36580c4a-2143-4b40-a459-a2be0a551933",
+  "Name": "Large Screen",
+  "SiteAddress1": "Testing Address",
+  "SiteAddress2": "",
+  "SiteTown": "Saffron Walden",
+  "SiteCounty": "Suffolk",
+  "SitePostCode": "CB10 087",
+  "SiteCountry": "United Kingdom",
+  "CheckInFrequency": "Weekly",
+  "DateCreated": "2024-01-18T04:17:10.9507904Z",
+  "DateModified": "0001-01-01T00:00:00"
+}
+]

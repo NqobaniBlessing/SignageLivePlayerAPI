@@ -1,4 +1,5 @@
 ﻿using SignageLivePlayerAPI.Models;
+using SignageLivePlayerAPI.Models.DTOs;
 using System.Linq.Expressions;
 
 namespace SignageLivePlayerAPI.Services.Interfaces

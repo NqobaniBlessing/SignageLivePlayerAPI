@@ -1,10 +1,9 @@
 ﻿using SignageLivePlayerAPI.Models;
 using SignageLivePlayerAPI.Services.Interfaces;
 using System.Linq.Expressions;
-using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Xml.Linq;
+
 
 namespace SignageLivePlayerAPI.Services
 {
@@ -15,6 +14,8 @@ namespace SignageLivePlayerAPI.Services
         public Player CreatePlayer(Player player)
         {
             player.DateCreated = DateTime.UtcNow;
+            player.Id = GetNextId();
+            player.UniqueId = Guid.NewGuid();
             
             AppendToJson(player, filePath);
 
@@ -47,6 +48,7 @@ namespace SignageLivePlayerAPI.Services
         public void Remove(Player player, int id)
         {
             var players = GetAll();
+
             var playerToRemove = players.FirstOrDefault(p => p.Id == id);
             
             if (playerToRemove != null)
@@ -55,15 +57,22 @@ namespace SignageLivePlayerAPI.Services
 
                 SaveToJson(players, filePath);
             }
-
         }
 
         public Player Update(Player player, int id)
         {
             var players = GetAll();
+
+            if (players.Count.Equals(0))
+                return null;
+
             var playerToUpdateIndex = players.FindIndex(p => p.Id == id);
 
-            if (playerToUpdateIndex != -1)
+            if (playerToUpdateIndex == -1)
+            {
+                return null;
+            }
+            else
             {
                 player.DateModified = DateTime.UtcNow;
                 players[playerToUpdateIndex] = player;
@@ -76,7 +85,7 @@ namespace SignageLivePlayerAPI.Services
 
         // Utility Functions
 
-        static T LoadFromJson<T>(string filePath)
+        private T? LoadFromJson<T>(string filePath)
         {
             string json = File.ReadAllText(filePath);
 
@@ -87,7 +96,7 @@ namespace SignageLivePlayerAPI.Services
             });
         }
 
-        static void SaveToJson<T>(T data, string filePath)
+        private void SaveToJson<T>(T data, string filePath)
         {
             string json = JsonSerializer.Serialize(data, new JsonSerializerOptions
             {
@@ -97,7 +106,7 @@ namespace SignageLivePlayerAPI.Services
             File.WriteAllText(filePath, json);
         }
 
-        static void AppendToJson<T>(T newData, string filePath)
+        private void AppendToJson<T>(T newData, string filePath)
         {
             if (File.Exists(filePath))
             {
@@ -129,5 +138,12 @@ namespace SignageLivePlayerAPI.Services
                 SaveToJson(newDataList, filePath);
             }
         }
+
+        private int GetNextId()
+        {
+            return ++idCounter;
+        }
+
+        private int idCounter = 0;
     }
 }
