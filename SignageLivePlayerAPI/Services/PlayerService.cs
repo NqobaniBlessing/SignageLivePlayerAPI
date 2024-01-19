@@ -22,21 +22,14 @@ namespace SignageLivePlayerAPI.Services
             return player;
         }
 
-        public bool Exists(int id)
-        {
-            var player = Get(id);
-
-            return player != null;
-        }
-
-        public List<Player>? GetAll(Expression<Func<Player, bool>>? filter = null)
+        public List<Player>? GetAllPlayers()
         {
             var players = LoadFromJson<List<Player>>(filePath);
 
             return players;
         }
 
-        public Player? Get(int id)
+        public Player? GetPlayer(int id)
         {
             var players = LoadFromJson<List<Player>>(filePath);
 
@@ -45,11 +38,11 @@ namespace SignageLivePlayerAPI.Services
             return player;
         }
 
-        public void Remove(Player player, int id)
+        public void RemovePlayer(Player player, int id)
         {
-            var players = GetAll();
+            var players = GetAllPlayers();
 
-            var playerToRemove = players.FirstOrDefault(p => p.Id == id);
+            var playerToRemove = players.Find(p => p.Id == id);
             
             if (playerToRemove != null)
             {
@@ -59,9 +52,9 @@ namespace SignageLivePlayerAPI.Services
             }
         }
 
-        public Player Update(Player player, int id)
+        public Player UpdatePlayer(Player player, int id)
         {
-            var players = GetAll();
+            var players = GetAllPlayers();
 
             if (players.Count.Equals(0))
                 return null;
@@ -142,9 +135,10 @@ namespace SignageLivePlayerAPI.Services
 
         private int GetNextId()
         {
-            return ++idCounter;
+            var players = GetAllPlayers();
+            var nextId = players.Count + 1;
+            
+            return nextId;
         }
-
-        private int idCounter = 0;
     }
 }

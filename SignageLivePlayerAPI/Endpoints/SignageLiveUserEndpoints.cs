@@ -1,0 +1,181 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using SignageLivePlayerAPI.Models;
+using SignageLivePlayerAPI.Models.DTOs;
+using SignageLivePlayerAPI.Services.Interfaces;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace SignageLivePlayerAPI.Endpoints
+{
+    public static class SignageLiveUserrEndpoints
+    {
+        public static void MapSignageLiveUserEndpoints(this WebApplication app)
+        {
+            app.MapPost("api/users", (IUserService userService, IMapper mapper, UserCreateDTO userDTO) =>
+            {
+                var user = mapper.Map<User>(userDTO);
+                var result = mapper.Map<UserDTO>(userService.CreateUser(user));
+
+                return Results.Created($"api/users/{result.UniqueId}", result);
+            });
+
+            app.MapGet("api/users", (HttpContext context, IUserService userService, IMapper mapper) =>
+            {
+                // Only admins can access all users
+                var adminClaim = context.User.Claims.FirstOrDefault(u => u.Type.Equals("admin"));
+
+                if (adminClaim is null || adminClaim.Value.Equals("false"))
+                    return Results.Forbid();
+
+                var result = mapper.Map<List<UserDTO>>(userService.GetAllUsers());
+
+                return Results.Ok(result);
+            }).RequireAuthorization();
+
+            app.MapGet("api/users/me", (HttpContext context, IUserService userService, IMapper mapper) =>
+            {
+                var idClaim = context.User.Claims.FirstOrDefault(u => u.Type.Equals("id"));
+
+                // If Id Claim of authenticated user is null, something is wrong with the application
+                if (idClaim == null)
+                    return Results.StatusCode(500);
+
+                Guid.TryParse(idClaim.Value, out var id);
+                
+                var me = userService.GetUser(id); 
+                var result = mapper.Map<UserDTO>(me);
+
+                return Results.Ok(result);
+            }).RequireAuthorization();
+
+            app.MapPut("api/users/me", (HttpContext context, IUserService userService, UserUpdateMeDTO userDTO) =>
+            {
+                var idClaim = context.User.Claims.FirstOrDefault(u => u.Type.Equals("id"));
+
+                // If Id Claim of authenticated user is null, something is wrong with the application
+                if (idClaim == null)
+                    return Results.StatusCode(500);
+
+                Guid.TryParse(idClaim.Value, out var id);
+
+                var user = userService.GetUser(id);
+                user.UserName = userDTO.UserName;
+                user.Password = userDTO.Password;
+                userService.UpdateUser(user, id);
+
+                return Results.NoContent();
+            }).RequireAuthorization();
+
+            app.MapDelete("api/users/me", (HttpContext context, IUserService userService) =>
+            {
+                var idClaim = context.User.Claims.FirstOrDefault(u => u.Type.Equals("id"));
+
+                // If Id Claim of authenticated user is null, something is wrong with the application
+                if (idClaim == null)
+                    return Results.StatusCode(500);
+
+                Guid.TryParse(idClaim.Value, out var id);
+
+                var user = userService.GetUser(id);
+
+                if (user is null)
+                    return Results.NotFound();
+
+                userService.RemoveUser(user, id);
+
+                return Results.NoContent();
+            }).RequireAuthorization();
+
+            app.MapPut("api/users/claims", (HttpContext context, IUserService userService, Guid id, Dictionary<string, string> claims,
+                IMapper mapper) =>
+            {
+                // Only admins can add new claims
+                var adminClaim = context.User.Claims.FirstOrDefault(u => u.Type.Equals("admin"));
+
+                if (adminClaim is null || adminClaim.Value.Equals("false"))
+                    return Results.Forbid();
+
+                var user = userService.GetUser(id);
+
+                if (user == null)
+                    return Results.NotFound();
+                
+                foreach (var kvp in claims)
+                {
+                    user.Claims.Add(kvp.Key, kvp.Value);
+                }
+                userService.UpdateUser(user, id);
+
+                return Results.Ok();
+
+            }).RequireAuthorization();
+
+            app.MapDelete("api/users/{id:guid}", (HttpContext context, IUserService userService, Guid id) =>
+            {
+                // Only admins can force delete someone else's user by providing the id
+                var adminClaim = context.User.Claims.FirstOrDefault(u => u.Type.Equals("admin"));
+
+                if (adminClaim is null || adminClaim.Value.Equals("false"))
+                    return Results.Forbid();
+
+                var user = userService.GetUser(id);
+
+                if (user is null)
+                    return Results.NotFound();
+
+                userService.RemoveUser(user, id);
+
+                return Results.NoContent();
+            }).RequireAuthorization();
+
+            app.MapPost("api/auth/token", [AllowAnonymous] (IUserService userService, UserAuthDTO userDTO, 
+                IConfiguration configuration, IMapper mapper) =>
+            {
+                var claims = new List<Claim>();
+
+                var users = userService.GetAllUsers();
+                var userFromDataStore = users?.Find(u => u.UserName.Equals(userDTO.UserName));
+
+                if (userFromDataStore == null)
+                    return Results.NotFound();
+
+                if (userService.AuthenticateUser(userDTO))
+                {
+                    var issuer = configuration["Jwt:Issuer"];
+                    var audience = configuration["Jwt:Audience"];
+                    var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"] ?? throw new ArgumentNullException());
+
+                    // Add custom claims specific to the authenticated user
+                    foreach (var kvp in userFromDataStore.Claims)
+                    {
+                        claims.Add(new Claim(kvp.Key, kvp.Value));
+                    }
+
+                    var tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                        Subject = new ClaimsIdentity(claims),
+                        Expires = DateTime.UtcNow.AddMinutes(20),
+                        Issuer = issuer,
+                        Audience = audience,
+                        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                        SecurityAlgorithms.HmacSha512Signature)
+                    };
+
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var token = tokenHandler.CreateToken(tokenDescriptor);
+                    var jwtToken = tokenHandler.WriteToken(token);
+                    var stringToken = tokenHandler.WriteToken(token);
+
+                    return Results.Ok(stringToken);
+                }
+
+                return Results.Unauthorized();
+            });
+        }
+    }
+}

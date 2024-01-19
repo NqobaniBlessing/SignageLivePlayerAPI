@@ -1,16 +1,14 @@
 ﻿using SignageLivePlayerAPI.Models;
-using SignageLivePlayerAPI.Models.DTOs;
 using System.Linq.Expressions;
 
 namespace SignageLivePlayerAPI.Services.Interfaces
 {
     public interface IPlayerService
     {
-        Player Update(Player player, int id);
+        Player UpdatePlayer(Player player, int id);
         Player CreatePlayer(Player player);
-        List<Player>? GetAll(Expression<Func<Player, bool>>? filter = null);
-        Player? Get(int id);
-        void Remove(Player player, int id);
-        bool Exists(int id);
+        List<Player>? GetAllPlayers();
+        Player? GetPlayer(int id);
+        void RemovePlayer(Player player, int id);
     }
 }

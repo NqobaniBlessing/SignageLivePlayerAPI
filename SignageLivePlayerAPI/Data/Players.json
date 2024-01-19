@@ -26,5 +26,33 @@
     "CheckInFrequency": "Daily",
     "DateCreated": "2024-01-18T04:17:10.4847353Z",
     "DateModified": "2024-01-18T14:55:35.988407Z"
-  }
+  },
+{
+  "Id": 3,
+  "UniqueId": "67caa45f-920e-446a-a3d0-17950ecb53c7",
+  "Name": "SoC Device",
+  "SiteAddress1": "Address",
+  "SiteAddress2": "",
+  "SiteTown": "Cambridge",
+  "SiteCounty": "Cambridgeshire",
+  "SitePostCode": "CB7 234",
+  "SiteCountry": "United Kingdom",
+  "CheckInFrequency": "Monthly",
+  "DateCreated": "2024-01-19T12:16:43.1062538Z",
+  "DateModified": "0001-01-01T00:00:00"
+},
+{
+  "Id": 4,
+  "UniqueId": "27d97ba9-a34d-472f-8464-4a11bc36053a",
+  "Name": "Billboard",
+  "SiteAddress1": "Test Address",
+  "SiteAddress2": "string",
+  "SiteTown": "Newmarket",
+  "SiteCounty": "Suffolk",
+  "SitePostCode": "CB8 093",
+  "SiteCountry": "United Kingdom",
+  "CheckInFrequency": "Weekly",
+  "DateCreated": "2024-01-19T13:37:04.7814819Z",
+  "DateModified": "0001-01-01T00:00:00"
+}
 ]

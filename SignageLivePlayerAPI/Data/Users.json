@@ -1,0 +1,32 @@
+[
+  {
+    "UniqueId": "1d821ba4-42c8-406e-9366-289990215808",
+    "UserName": "blessing@signagelive.com",
+    "Password": "B49CA8423A331CEA45A7F4A1C6E8F22CF22EBBD2D79797FD3320CE820350C452F2CC7166C60C0EA02538822EE67B73EF79EDB2A8C72E1119B1195B1103682FBF",
+    "Claims": {
+      "id": "1d821ba4-42c8-406e-9366-289990215808",
+      "email": "blessing@signagelive.com",
+      "jti": "0e241f59-2438-4217-ae1e-80425339cd3e",
+      "admin": "true",
+      "role": "Software Developer"
+    },
+    "Salt": "5R5CKfMx4Ye51cEk/g49awbYPABvXN/SmtDSgmXHpNWOSwNQp9MxjATCpKUNFTizdlSwV+H4kf6zYQsAk5Eexg==",
+    "DateCreated": "2024-01-19T13:23:49.6687705Z",
+    "DateModified": "0001-01-01T00:00:00"
+  },
+{
+  "UniqueId": "fe0941d8-1eac-49e9-bbe6-16ed137f92c9",
+  "UserName": "neil@signagelive.com",
+  "Password": "7C5757F29814A631F5E1811AA1A861149CE2C2BBFF9F15995A6495C5AA8FB3CE366741A0D57C4DC447B1DB13B136D66FF6AEE58B9F287DDCCCD1C22D9496AEBF",
+  "Claims": {
+    "id": "fe0941d8-1eac-49e9-bbe6-16ed137f92c9",
+    "email": "neil@signagelive.com",
+    "jti": "05cf1f3e-0ff4-44de-8b6a-1758bc7ebcb0",
+    "admin": "false",
+    "role": "user"
+  },
+  "Salt": "9p58dOBtFhA5dLRM5OLAAlEEjmTWZCqvHOCR6tZ2YmdKt/GAc2I46zW91sGW+JxjWRQXh2hur24HCrtY0gQ8mQ==",
+  "DateCreated": "2024-01-19T13:30:16.6159495Z",
+  "DateModified": "0001-01-01T00:00:00"
+}
+]
