@@ -6,7 +6,6 @@ using SignageLivePlayerAPI.Configurations;
 using SignageLivePlayerAPI.Endpoints;
 using SignageLivePlayerAPI.Services;
 using SignageLivePlayerAPI.Services.Interfaces;
-using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -117,6 +116,7 @@ app.UseStatusCodePages(async statusCodeContext
 
 app.UseHttpsRedirection();
 
+app.MapSignageLiveAuthEndpoints();
 app.MapSignageLiveUserEndpoints();
 app.MapSignageLivePLayerEndpoints();
 
