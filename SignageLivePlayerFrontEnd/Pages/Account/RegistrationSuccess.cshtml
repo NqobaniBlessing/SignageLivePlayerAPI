@@ -1,0 +1,19 @@
+﻿@page
+@model SignageLivePlayerFrontEnd.Pages.Account.RegistrationSuccessModel
+@{
+    <div style="margin: 20px auto; width: 500px">
+        <h1>Registration Successful</h1>
+
+        <form method="post" asp-page-handler="OnPostAsync">
+           <p>
+            Congratulations! Your registration was successful. You are now a valued member of our community.
+            Welcome to SignageLive. You can use the email registered with your account as your username.
+            If you have any questions or need assistance, feel free to reach out to our support team.
+
+            Best regards,
+            SignageLive
+           </p>
+           <button class="btn btn-primary" type="submit">Done</button>
+        </form>
+    </div>
+}

@@ -1,0 +1,21 @@
+﻿@page
+@model SignageLivePlayerFrontEnd.Pages.Account.RegisterModel
+@{
+    <div style="margin: 20px auto; width: 300px">
+        <h1>Register</h1>
+        <form method="post" asp-page-handler="OnPostAsync">
+            <div class="form-group">
+                <label asp-for="NewUser.UserName">Username:</label>
+                <input type="email" class="form-control" id="username" aria-describedby="emailHelp" 
+                    placeholder="Enter email" name="username" asp-for="NewUser.UserName" />
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+           </div>
+           <div class="form-group">
+            <label asp-for="NewUser.Password">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" asp-for="NewUser.Password"
+                placeholder="Password"/>
+          </div>
+          <button class="btn btn-primary" type="submit">Login</button>
+       </form>
+    </div>
+}
