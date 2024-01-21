@@ -12,6 +12,10 @@ namespace SignageLivePlayerFrontEnd.Pages.Account
     {
         private readonly IHttpClientFactory _httpClientFactory;
         public Credentials? NewUser { get; set; }
+        public string ConfirmPassword { get; set; } = string.Empty;
+
+        [TempData]
+        public string ErrorMessage { get; set; } = string.Empty;
 
         public RegisterModel(IHttpClientFactory httpClientFactory)
         {
@@ -20,26 +24,46 @@ namespace SignageLivePlayerFrontEnd.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Initial validation
+            if (NewUser.Password != ConfirmPassword)
+            {
+                ErrorMessage = "Password and Confirm Password do not match.";
+                return RedirectToPage();
+            }
+
             var client = _httpClientFactory.CreateClient("sl_client");
 
             var model = new StringContent(
                 JsonSerializer.Serialize(NewUser),
                 Encoding.UTF8, Application.Json);
 
-            var response = await client.PostAsync("/api/users", model);
-            response.EnsureSuccessStatusCode();
-
-            var user = await response.Content.ReadAsStringAsync();
-
-            TempData["Created User"] = user;
-
-            if (!string.IsNullOrEmpty(user))
+            try
             {
-                return RedirectToPage("/Account/RegistrationSuccess");
+                var response = await client.PostAsync("/api/users", model);
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex)
+            {
+                if (ex.StatusCode.HasValue)
+                {
+                    switch (ex.StatusCode)
+                    {
+                        case System.Net.HttpStatusCode.BadRequest:
+                            {
+                                ErrorMessage = "Invalid input";
+                                return RedirectToPage();
+                            }
+                        case System.Net.HttpStatusCode.InternalServerError:
+                            {
+                                ErrorMessage = "Something went wrong, please contact technical support for assistance.";
+                                return RedirectToPage();
+                            }
+                    }
+                }
             }
 
-            // Authentication failed
-            return Page();
+            // If you get here, registration is successful
+            return RedirectToPage("/Account/RegistrationSuccess");
         }
     }
 }

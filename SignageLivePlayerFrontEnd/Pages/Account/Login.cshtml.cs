@@ -4,6 +4,7 @@ using SignageLivePlayerFrontEnd.Models;
 using static System.Net.Mime.MediaTypeNames;
 using System.Text.Json;
 using System.Text;
+using System.Net;
 
 namespace SignageLivePlayerFrontEnd.Pages.Account
 {
@@ -12,6 +13,9 @@ namespace SignageLivePlayerFrontEnd.Pages.Account
     {
         private readonly IHttpClientFactory _httpClientFactory;
         public Credentials? Credentials { get; set; }
+
+        [TempData]
+        public string ErrorMessage { get; set; } = string.Empty;
 
         public LoginModel(IHttpClientFactory httpClientFactory)
         {
@@ -30,19 +34,41 @@ namespace SignageLivePlayerFrontEnd.Pages.Account
                 JsonSerializer.Serialize(Credentials),
                 Encoding.UTF8, Application.Json);
 
-            var response = await client.PostAsync("/api/auth/token", model);
-            response.EnsureSuccessStatusCode();
-
-            var token = await response.Content.ReadAsStringAsync();
-
-            if (!string.IsNullOrEmpty(token))
+            try
             {
-                HttpContext.Response.Cookies.Append("jwtToken", token);
-                return RedirectToPage("/Index");
+                var response = await client.PostAsync("/api/auth/token", model);
+                response.EnsureSuccessStatusCode();
+
+                var token = await response.Content.ReadAsStringAsync();
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    // Store token in session for reuse in subsequent requests
+                    HttpContext.Session.SetString("Token", token);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                if (ex.StatusCode.HasValue)
+                {
+                    switch (ex.StatusCode)
+                    {
+                        case HttpStatusCode.Unauthorized:
+                            {
+                                ErrorMessage = "Invalid Username or password.";
+                                return RedirectToPage();
+                            }
+                        case HttpStatusCode.InternalServerError:
+                            {
+                                ErrorMessage = "Something went wrong, please contact technical support";
+                                return RedirectToPage();
+                            }
+                    }
+                }
             }
 
-            // Authentication failed
-            return Page();
+            // Authentication success at this point
+            return RedirectToPage("/Index");
         }
     }
 }

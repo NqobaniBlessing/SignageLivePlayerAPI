@@ -2,6 +2,7 @@
 using SignageLivePlayerAPI.Services.Interfaces;
 using System.Linq.Expressions;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 
@@ -10,6 +11,12 @@ namespace SignageLivePlayerAPI.Services
     public class PlayerService : IPlayerService
     {
         private readonly string filePath = "Data/Players.json";
+        private readonly ILogger<PlayerService> _logger;
+
+        public PlayerService(ILogger<PlayerService> logger)
+        {
+            _logger = logger;
+        }
 
         public Player CreatePlayer(Player player)
         {
@@ -81,7 +88,17 @@ namespace SignageLivePlayerAPI.Services
 
         private T? LoadFromJson<T>(string filePath)
         {
-            string json = File.ReadAllText(filePath);
+            string json = string.Empty;
+
+            try
+            {
+                json = File.ReadAllText(filePath);      
+            }
+            catch (IOException ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
 
             return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
             {
@@ -97,46 +114,63 @@ namespace SignageLivePlayerAPI.Services
                 WriteIndented = true
             });
 
-            File.WriteAllText(filePath, json);
+            try
+            {
+                File.WriteAllText(filePath, json);
+            }
+            catch (IOException ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
 
         private void AppendToJson<T>(T newData, string filePath)
         {
-            if (File.Exists(filePath))
+            try
             {
-                // If the file exists, append the new data to the existing content
-                string existingJson = File.ReadAllText(filePath);
-
-                if (existingJson.Equals(string.Empty))
+                if (File.Exists(filePath))
                 {
-                    var newDataList = new List<T> { newData };
-                    SaveToJson(newDataList, filePath);
+                    // If the file exists, append the new data to the existing content
+                    string existingJson = File.ReadAllText(filePath);
+
+                    if (existingJson.Equals(string.Empty))
+                    {
+                        var newDataList = new List<T> { newData };
+                        SaveToJson(newDataList, filePath);
+                    }
+                    else
+                    {
+                        string newJson = JsonSerializer.Serialize(newData, new JsonSerializerOptions
+                        {
+                            WriteIndented = true
+                        });
+
+                        // Add a comma between existing JSON and new JSON
+                        string appendedJson = $"{existingJson.TrimEnd(']', '\r', '\n')},\n{newJson}\n]";
+
+                        File.WriteAllText(filePath, appendedJson);
+                    }
                 }
                 else
                 {
-                    string newJson = JsonSerializer.Serialize(newData, new JsonSerializerOptions
-                    {
-                        WriteIndented = true 
-                    });
-                    
-                    // Add a comma between existing JSON and new JSON
-                    string appendedJson = $"{existingJson.TrimEnd(']', '\r', '\n')},\n{newJson}\n]";
-
-                    File.WriteAllText(filePath, appendedJson);
+                    // If the file doesn't exist, create a new file with the new data
+                    var newDataList = new List<T> { newData };
+                    SaveToJson(newDataList, filePath);
                 }
             }
-            else
+            catch (IOException ex)
             {
-                // If the file doesn't exist, create a new file with the new data
-                var newDataList = new List<T> { newData };
-                SaveToJson(newDataList, filePath);
-            }
+                _logger.LogError(ex.Message);
+                throw;
+            }  
         }
 
         private int GetNextId()
         {
             var players = GetAllPlayers();
-            var nextId = players.Count + 1;
+            int maxId = players.Count > 0 ? players.Max(p => p.Id) : 0;
+            int nextId = maxId + 1;
             
             return nextId;
         }

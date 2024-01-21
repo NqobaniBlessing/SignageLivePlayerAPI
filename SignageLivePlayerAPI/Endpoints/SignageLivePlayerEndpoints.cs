@@ -17,6 +17,9 @@ namespace SignageLivePlayerAPI.Endpoints
                 if (!isAcceptableClaim)
                     return Results.Forbid();
 
+                if (playerDTO == null)
+                    return Results.BadRequest();
+
                 var player = mapper.Map<Player>(playerDTO);
                 var result = mapper.Map<PlayerDTO>(playerService.CreatePlayer(player));
 
@@ -51,7 +54,7 @@ namespace SignageLivePlayerAPI.Endpoints
                 if (!isAcceptableClaim)
                     return Results.Forbid();
 
-                if (id <= 0)
+                if (id <= 0 || playerDTO == null)
                     return Results.BadRequest();
 
                 var player = mapper.Map<Player>(playerDTO);

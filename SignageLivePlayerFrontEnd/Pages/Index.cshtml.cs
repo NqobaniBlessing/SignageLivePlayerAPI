@@ -8,21 +8,22 @@ namespace SignageLivePlayerFrontEnd.Pages
         private readonly ILogger<IndexModel> _logger;
 
         [BindProperty]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            if(!User.Identity.IsAuthenticated)
+            if (!HttpContext.Session.Keys.Contains("Token"))
             {
-                RedirectToPage("/Account/Login");
+                return RedirectToPage("/Account/Login");
             }
-
-            UserName = HttpContext.User.Identity.Name;
+            
+            HttpContext.Session.TryGetValue("email", out var username);
+            return Page();
         }
     }
 }

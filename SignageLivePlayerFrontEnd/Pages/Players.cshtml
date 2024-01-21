@@ -1,4 +1,19 @@
 ﻿@page
 @model SignageLivePlayerFrontEnd.Pages.PlayersModel
 @{
+    <div style="margin: 20px auto; width: 600px">
+    <h1>Signage Live Players</h1>
+        <ul class="list-group">
+            @foreach (var player in Model.Players)
+            {
+                <li class="list-group-item"><a>@player.Name</a> in @player.SiteTown |
+                    <a asp-page="/EditPlayer" asp-route-id="@player.Id">Edit</a> |
+                    <a asp-page="/Players" asp-page-handler="Delete" asp-route-id="@player.Id" 
+                    onclick="return confirm('Are you sure you want to delete this player?')">Delete</a>
+                </li>
+            }
+        </ul>
+        <br/>
+        <a class="btn btn-primary" asp-page="/CreatePlayer">Create New Player</a>
+    </div>
 }

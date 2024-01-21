@@ -1,14 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
 using SignageLivePlayerAPI.Models;
 using SignageLivePlayerAPI.Models.DTOs;
 using SignageLivePlayerAPI.Services.Interfaces;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace SignageLivePlayerAPI.Endpoints
 {
@@ -18,6 +11,9 @@ namespace SignageLivePlayerAPI.Endpoints
         {
             app.MapPost("api/users", (IUserService userService, IMapper mapper, UserCreateDTO userDTO) =>
             {
+                if (userDTO == null)
+                    return Results.BadRequest();
+
                 var user = mapper.Map<User>(userDTO);
                 var result = mapper.Map<UserDTO>(userService.CreateUser(user));
 
@@ -55,6 +51,9 @@ namespace SignageLivePlayerAPI.Endpoints
 
             app.MapPut("api/users/me", (HttpContext context, IUserService userService, UserUpdateMeDTO userDTO) =>
             {
+                if (userDTO == null)
+                    return Results.BadRequest();
+
                 var idClaim = context.User.Claims.FirstOrDefault(u => u.Type.Equals("id"));
 
                 // If Id Claim of authenticated user is null, something is wrong with the application

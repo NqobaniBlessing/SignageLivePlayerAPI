@@ -24,7 +24,9 @@ namespace SignageLivePlayerAPI.Endpoints
                 if (userFromDataStore == null)
                     return Results.NotFound();
 
-                if (userService.AuthenticateUser(userDTO))
+                bool isAuthenticated = userService.AuthenticateUser(userDTO);
+
+                if (isAuthenticated)
                 {
                     var issuer = configuration["Jwt:Issuer"];
                     var audience = configuration["Jwt:Audience"];

@@ -13,11 +13,17 @@ namespace SignageLivePlayerAPI.Services
     public class UserService : IUserService
     {
         private readonly string filePath = "Data/Users.json";
+        private readonly ILogger<UserService> _logger;
 
         // Values for hashing
         private const int keySize = 64;
         private const int iterations = 350000;
         private HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
+
+        public UserService(ILogger<UserService> logger)
+        {
+            _logger = logger;
+        }
 
         public User CreateUser(User user)
         {
@@ -99,7 +105,17 @@ namespace SignageLivePlayerAPI.Services
 
         private T? LoadFromJson<T>(string filePath)
         {
-            string json = File.ReadAllText(filePath);
+            string json = string.Empty;
+
+            try
+            {
+                json = File.ReadAllText(filePath);
+            }
+            catch (IOException ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
 
             return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
             {
@@ -115,39 +131,55 @@ namespace SignageLivePlayerAPI.Services
                 WriteIndented = true
             });
 
-            File.WriteAllText(filePath, json);
+            try
+            {
+                File.WriteAllText(filePath, json);
+            }
+            catch (IOException ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
 
         private void AppendToJson<T>(T newData, string filePath)
         {
-            if (File.Exists(filePath))
+            try
             {
-                // If the file exists, append the new data to the existing content
-                string existingJson = File.ReadAllText(filePath);
-
-                if (existingJson.Equals(string.Empty))
+                if (File.Exists(filePath))
                 {
-                    var newDataList = new List<T> { newData };
-                    SaveToJson(newDataList, filePath);
+                    // If the file exists, append the new data to the existing content
+                    string existingJson = File.ReadAllText(filePath);
+
+                    if (existingJson.Equals(string.Empty))
+                    {
+                        var newDataList = new List<T> { newData };
+                        SaveToJson(newDataList, filePath);
+                    }
+                    else
+                    {
+                        string newJson = JsonSerializer.Serialize(newData, new JsonSerializerOptions
+                        {
+                            WriteIndented = true
+                        });
+
+                        // Add a comma between existing JSON and new JSON
+                        string appendedJson = $"{existingJson.TrimEnd(']', '\r', '\n')},\n{newJson}\n]";
+
+                        File.WriteAllText(filePath, appendedJson);
+                    }
                 }
                 else
                 {
-                    string newJson = JsonSerializer.Serialize(newData, new JsonSerializerOptions
-                    {
-                        WriteIndented = true 
-                    });
-                    
-                    // Add a comma between existing JSON and new JSON
-                    string appendedJson = $"{existingJson.TrimEnd(']', '\r', '\n')},\n{newJson}\n]";
-
-                    File.WriteAllText(filePath, appendedJson);
+                    // If the file doesn't exist, create a new file with the new data
+                    var newDataList = new List<T> { newData };
+                    SaveToJson(newDataList, filePath);
                 }
             }
-            else
+            catch (IOException ex)
             {
-                // If the file doesn't exist, create a new file with the new data
-                var newDataList = new List<T> { newData };
-                SaveToJson(newDataList, filePath);
+                _logger.LogError(ex.Message);
+                throw;
             }
         }
 

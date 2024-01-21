@@ -6,15 +6,23 @@
         <form method="post" asp-page-handler="OnPostAsync">
             <div class="form-group">
                 <label asp-for="Credentials.UserName">Email:</label>
-                <input type="email" class="form-control" id="username" aria-describedby="emailHelp" 
+                <br />
+                <input type="email" class="form-control" id="username"
                     placeholder="Enter email" name="username" asp-for="Credentials.UserName" />
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                <span asp-validation-for="Credentials.UserName" class="text-danger"></span>
            </div>
+           <br/>
            <div class="form-group">
             <label asp-for="Credentials.Password">Password:</label>
+            <br />
             <input type="password" class="form-control" id="password" name="password" asp-for="Credentials.Password"
                 placeholder="Password"/>
+            <span asp-validation-for="Credentials.Password" class="text-danger"></span>
           </div>
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <p class="text-danger">@Model.ErrorMessage</p>
+            }
           <br/>
           <button class="btn btn-primary" type="submit">Login</button>
        </form>

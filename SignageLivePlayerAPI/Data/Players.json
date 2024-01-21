@@ -1,20 +1,6 @@
 [
   {
     "Id": 1,
-    "UniqueId": "8d593e2f-fd13-4c67-8feb-737f2168f9e0",
-    "Name": "TV",
-    "SiteAddress1": "Ellis House",
-    "SiteAddress2": "",
-    "SiteTown": "Haverhill",
-    "SiteCounty": "Suffolk",
-    "SitePostCode": "CB9 087",
-    "SiteCountry": "United Kingdom",
-    "CheckInFrequency": "Monthly",
-    "DateCreated": "2024-01-18T04:16:10.4847353Z",
-    "DateModified": "2024-01-18T15:02:50.5407581Z"
-  },
-  {
-    "Id": 2,
     "UniqueId": "36580c4a-2143-4b40-a459-a2be0a551933",
     "Name": "Large Screen",
     "SiteAddress1": "Testing Address",
@@ -27,32 +13,32 @@
     "DateCreated": "2024-01-18T04:17:10.4847353Z",
     "DateModified": "2024-01-18T14:55:35.988407Z"
   },
-{
-  "Id": 3,
-  "UniqueId": "67caa45f-920e-446a-a3d0-17950ecb53c7",
-  "Name": "SoC Device",
-  "SiteAddress1": "Address",
-  "SiteAddress2": "",
-  "SiteTown": "Cambridge",
-  "SiteCounty": "Cambridgeshire",
-  "SitePostCode": "CB7 234",
-  "SiteCountry": "United Kingdom",
-  "CheckInFrequency": "Monthly",
-  "DateCreated": "2024-01-19T12:16:43.1062538Z",
-  "DateModified": "0001-01-01T00:00:00"
-},
+  {
+    "Id": 3,
+    "UniqueId": "00000000-0000-0000-0000-000000000000",
+    "Name": "SoC Device",
+    "SiteAddress1": "Test Address",
+    "SiteAddress2": null,
+    "SiteTown": "Cambridge",
+    "SiteCounty": "Cambridgeshire",
+    "SitePostCode": "CB8 376",
+    "SiteCountry": "United Kingdom",
+    "CheckInFrequency": "Weekly",
+    "DateCreated": "2024-01-21T15:51:56.8206054Z",
+    "DateModified": "2024-01-21T15:57:26.3875385Z"
+  },
 {
   "Id": 4,
-  "UniqueId": "27d97ba9-a34d-472f-8464-4a11bc36053a",
-  "Name": "Billboard",
-  "SiteAddress1": "Test Address",
-  "SiteAddress2": "string",
-  "SiteTown": "Newmarket",
+  "UniqueId": "37b774e7-d3c3-4174-86ea-307c85713c8e",
+  "Name": "TV",
+  "SiteAddress1": "Testing Address",
+  "SiteAddress2": null,
+  "SiteTown": "Haverhill",
   "SiteCounty": "Suffolk",
-  "SitePostCode": "CB8 093",
+  "SitePostCode": "CB9 093",
   "SiteCountry": "United Kingdom",
-  "CheckInFrequency": "Weekly",
-  "DateCreated": "2024-01-19T13:37:04.7814819Z",
+  "CheckInFrequency": "Monthly",
+  "DateCreated": "2024-01-21T18:43:10.0682841Z",
   "DateModified": "0001-01-01T00:00:00"
 }
 ]
