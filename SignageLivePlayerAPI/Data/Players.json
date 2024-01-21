@@ -27,18 +27,32 @@
     "DateCreated": "2024-01-21T15:51:56.8206054Z",
     "DateModified": "2024-01-21T15:57:26.3875385Z"
   },
+  {
+    "Id": 4,
+    "UniqueId": "37b774e7-d3c3-4174-86ea-307c85713c8e",
+    "Name": "TV",
+    "SiteAddress1": "Testing Address",
+    "SiteAddress2": "Testing Address 2",
+    "SiteTown": "Haverhill",
+    "SiteCounty": "Suffolk",
+    "SitePostCode": "CB9 093",
+    "SiteCountry": "United Kingdom",
+    "CheckInFrequency": "Monthly",
+    "DateCreated": "2024-01-21T18:43:10.0682841Z",
+    "DateModified": "2024-01-21T19:18:22.8275272Z"
+  },
 {
-  "Id": 4,
-  "UniqueId": "37b774e7-d3c3-4174-86ea-307c85713c8e",
-  "Name": "TV",
-  "SiteAddress1": "Testing Address",
+  "Id": 5,
+  "UniqueId": "97b01944-0a3a-4eb8-86c5-f8830e5dfd4d",
+  "Name": "Touch Screen",
+  "SiteAddress1": "Testing",
   "SiteAddress2": null,
-  "SiteTown": "Haverhill",
-  "SiteCounty": "Suffolk",
-  "SitePostCode": "CB9 093",
+  "SiteTown": "Chelmsford",
+  "SiteCounty": "Essex",
+  "SitePostCode": "SK6 5874",
   "SiteCountry": "United Kingdom",
-  "CheckInFrequency": "Monthly",
-  "DateCreated": "2024-01-21T18:43:10.0682841Z",
+  "CheckInFrequency": "Yearly",
+  "DateCreated": "2024-01-21T19:19:12.2037892Z",
   "DateModified": "0001-01-01T00:00:00"
 }
 ]

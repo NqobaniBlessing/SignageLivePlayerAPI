@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SignageLivePlayerFrontEnd.Models;
 using static System.Net.Mime.MediaTypeNames;
 using System.Net.Http.Headers;
-using System.Net.Http;
 using System.Text.Json;
 using System.Text;
 using SignageLivePlayerFrontEnd.Models.DTOs;

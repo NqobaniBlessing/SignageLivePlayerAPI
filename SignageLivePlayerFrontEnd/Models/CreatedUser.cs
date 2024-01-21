@@ -6,6 +6,6 @@ namespace SignageLivePlayerFrontEnd.Models
     {
         public Guid UniqueId { get; set; }
         public string UserName { get; set; } = string.Empty;
-        public List<Claim> Claims { get; set; } = new List<Claim>();
+        public Dictionary<string, string> Claims { get; set; } = new Dictionary<string, string>();
     }
 }

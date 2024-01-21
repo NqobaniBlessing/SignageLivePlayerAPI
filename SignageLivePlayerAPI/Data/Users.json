@@ -28,5 +28,20 @@
   "Salt": "9p58dOBtFhA5dLRM5OLAAlEEjmTWZCqvHOCR6tZ2YmdKt/GAc2I46zW91sGW+JxjWRQXh2hur24HCrtY0gQ8mQ==",
   "DateCreated": "2024-01-19T13:30:16.6159495Z",
   "DateModified": "0001-01-01T00:00:00"
+},
+{
+  "UniqueId": "c4ed89d0-4ccf-45b8-843b-ed257994c28f",
+  "UserName": "charity@gmail.com",
+  "Password": "5C963169074E35E41A85C832A03B9DCF981F3255DF9F8BBB6C11752CE109DC4CE56CBD86203D6B80CD94E6E3B1C17824F90DEF4888AD622E24239E2E458F430F",
+  "Claims": {
+    "id": "c4ed89d0-4ccf-45b8-843b-ed257994c28f",
+    "email": "charity@gmail.com",
+    "jti": "7729abaf-5951-414e-b805-ebdafde97773",
+    "admin": "false",
+    "role": "user"
+  },
+  "Salt": "DGkZsS4Kqy9TlyxBnHcGqliGNrcF34qHPEqThseLY+v6SDq68cdNSDb7NO75hYOmchhQp1ECE4jDEjZliSkwdg==",
+  "DateCreated": "2024-01-21T19:17:45.0337072Z",
+  "DateModified": "0001-01-01T00:00:00"
 }
 ]
