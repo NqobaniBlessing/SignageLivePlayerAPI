@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SignageLivePlayerFrontEnd.Models;
-using static System.Net.Mime.MediaTypeNames;
-using System.Text.Json;
-using System.Text;
 using System.Net;
+using Microsoft.AspNetCore.Authentication;
+using SignageLivePlayerFrontEnd.Services.Interfaces;
 
 namespace SignageLivePlayerFrontEnd.Pages.Account
 {
@@ -12,14 +11,16 @@ namespace SignageLivePlayerFrontEnd.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ISecurityContextService _securityContextService;
+
         public Credentials? Credentials { get; set; }
+        public bool RememberMe { get; set; }
 
-        [TempData]
-        public string ErrorMessage { get; set; } = string.Empty;
-
-        public LoginModel(IHttpClientFactory httpClientFactory)
+        public LoginModel(IHttpClientFactory httpClientFactory, 
+            ISecurityContextService securityContextService)
         {
             _httpClientFactory = httpClientFactory;
+            _securityContextService = securityContextService;
         }
 
         public void OnGet()
@@ -28,24 +29,29 @@ namespace SignageLivePlayerFrontEnd.Pages.Account
 
         public async Task<IActionResult> OnPostAsync() 
         {
-            var client = _httpClientFactory.CreateClient("sl_client");
+            if (!ModelState.IsValid) return Page();
 
-            var model = new StringContent(
-                JsonSerializer.Serialize(Credentials),
-                Encoding.UTF8, Application.Json);
+            var client = _httpClientFactory.CreateClient("sl_client");
 
             try
             {
-                var response = await client.PostAsync("/api/auth/token", model);
+                var response = await client.PostAsJsonAsync("/api/auth/token", Credentials);
                 response.EnsureSuccessStatusCode();
 
                 var token = await response.Content.ReadAsStringAsync();
 
-                if (!string.IsNullOrEmpty(token))
+                // Create a claims principal for the auth cookie
+                var principal = _securityContextService.CreateClaimsPrincipal(token);
+
+                var authProperties = new AuthenticationProperties
                 {
-                    // Store token in session for reuse in subsequent requests
-                    HttpContext.Session.SetString("Token", token);
-                }
+                    IsPersistent = RememberMe
+                };
+
+                await HttpContext.SignInAsync("Signage_Live", principal, authProperties);
+
+                // Store original string token in session for reuse in subsequent requests
+                HttpContext.Session.SetString("access_token", token);
             }
             catch (HttpRequestException ex)
             {
@@ -55,12 +61,12 @@ namespace SignageLivePlayerFrontEnd.Pages.Account
                     {
                         case HttpStatusCode.Unauthorized:
                             {
-                                ErrorMessage = "Invalid Username or password.";
+                                ModelState.AddModelError("Auth_Err", "Invalid username or password.");
                                 return RedirectToPage();
                             }
                         case HttpStatusCode.InternalServerError:
                             {
-                                ErrorMessage = "Something went wrong, please contact technical support";
+                                ModelState.AddModelError("Svr_Err", "Something went wrong, please contact technical support");
                                 return RedirectToPage();
                             }
                     }

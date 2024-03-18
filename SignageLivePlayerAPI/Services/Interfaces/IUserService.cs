@@ -11,6 +11,6 @@ namespace SignageLivePlayerAPI.Services.Interfaces
         List<User>? GetAllUsers();
         User? GetUser(Guid id);
         void RemoveUser(User user, Guid id);
-        bool AuthenticateUser(UserAuthDTO user);
+        (bool isAuthenticated, User? user) AuthenticateUser(UserAuthDTO user);
     }
 }

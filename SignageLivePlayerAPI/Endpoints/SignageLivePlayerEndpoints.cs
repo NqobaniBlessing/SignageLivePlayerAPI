@@ -10,7 +10,8 @@ namespace SignageLivePlayerAPI.Endpoints
     {
         public static void MapSignageLivePLayerEndpoints(this WebApplication app)
         {
-            app.MapPost("api/players", (HttpContext context, IPlayerService playerService, IMapper mapper, PlayerCreateDTO playerDTO) =>
+            app.MapPost("api/players", (HttpContext context, IPlayerService playerService, 
+                IMapper mapper, PlayerCreateDTO playerDTO) =>
             {
                 var isAcceptableClaim = VerifyEditingClaims(context);
 

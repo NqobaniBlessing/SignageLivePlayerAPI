@@ -19,10 +19,11 @@
                 placeholder="Password"/>
             <span asp-validation-for="Credentials.Password" class="text-danger"></span>
           </div>
-            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-            {
-                <p class="text-danger">@Model.ErrorMessage</p>
-            }
+          <div class="form-group">
+              <label asp-for="@Model.RememberMe">Password:</label>
+              <br />
+              <input type="checkbox" class="form-control" id="checkbox" name="checkbox" asp-for="@Model.RememberMe" />
+          </div>
           <br/>
           <button class="btn btn-primary" type="submit">Login</button>
        </form>

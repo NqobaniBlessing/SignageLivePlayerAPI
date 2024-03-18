@@ -209,15 +209,20 @@ namespace SignageLivePlayerAPI.Services
             return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
         }
 
-        public bool AuthenticateUser(UserAuthDTO user)
+        public (bool isAuthenticated, User? user) AuthenticateUser(UserAuthDTO user)
         {
             var users = GetAllUsers();
-            var currentUser = users.Find(u => u.UserName.Equals(user.UserName));
+            if (users == null)
+                return (false, null);
+
+            var currentUser = users.FirstOrDefault(u => u.UserName.Equals(user.UserName));
 
             if (currentUser == null)
-                return false;
+                return (false, null);
 
-            return VerifyPassword(user.Password, currentUser.Password, currentUser.Salt);
+            var isAuthenticated = VerifyPassword(user.Password, currentUser.Password, currentUser.Salt);
+
+            return (isAuthenticated, currentUser);
         }
     }
 }
