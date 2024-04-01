@@ -2,6 +2,7 @@
 using SignageLivePlayerAPI.Models.DTOs;
 using SignageLivePlayerAPI.Services.Interfaces;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -36,10 +37,10 @@ namespace SignageLivePlayerAPI.Services
 
             // Add default claims for every created user
             user.Claims.Add("id", user.UniqueId.ToString());
-            user.Claims.Add("email", user.UserName);
+            user.Claims.Add(ClaimTypes.Email, user.UserName);
             user.Claims.Add("jti", Guid.NewGuid().ToString());
             user.Claims.Add("admin", "false");
-            user.Claims.Add("role", "user");
+            user.Claims.Add(ClaimTypes.Role, "user");
 
             AppendToJson(user, filePath);
 

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -6,6 +5,7 @@ using SignageLivePlayerAPI.Configurations;
 using SignageLivePlayerAPI.Endpoints;
 using SignageLivePlayerAPI.Services;
 using SignageLivePlayerAPI.Services.Interfaces;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,10 +20,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    options.DefaultAuthenticateScheme = "SL_Auth";
+    options.DefaultChallengeScheme = "SL_Auth";
+    options.DefaultScheme = "SL_Auth";
+
+}).AddJwtBearer("SL_Auth", options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -33,24 +34,22 @@ builder.Services.AddAuthentication(options =>
         (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = false,
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true
     };
-
-    options.MapInboundClaims = false;
 });
 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("ViewOnly", policy =>
     {
-        policy.RequireClaim("role", "user");
+        policy.RequireClaim(ClaimTypes.Role);
     });
 
     options.AddPolicy("ViewAndEdit", policy =>
     {
         policy.RequireClaim("admin", "true");
-        policy.RequireClaim("role", "Software Developer");
+        policy.RequireClaim(ClaimTypes.Role, "Software Developer", "Content Manager");
     });
 });
 

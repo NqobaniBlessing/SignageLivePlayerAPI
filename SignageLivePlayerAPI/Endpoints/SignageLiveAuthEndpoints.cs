@@ -1,11 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Authorization;
 using SignageLivePlayerAPI.Models.DTOs;
 using SignageLivePlayerAPI.Services.Interfaces;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace SignageLivePlayerAPI.Endpoints
 {
@@ -16,10 +11,12 @@ namespace SignageLivePlayerAPI.Endpoints
             app.MapPost("api/auth/token", [AllowAnonymous] (UserAuthDTO userDTO, 
                 ISecurityContextService securityContextService) =>
             {
-                var stringToken = securityContextService.CreateJwtToken(userDTO);
+                if (userDTO == null) return Results.BadRequest();
+
+                var token = securityContextService.CreateJwtToken(userDTO);
                     
-                return string.IsNullOrEmpty(stringToken) ? Results.Unauthorized() : 
-                Results.Ok(stringToken);
+                return string.IsNullOrEmpty(token) ? Results.Unauthorized() : 
+                Results.Ok(token);
             });
         }
     }

@@ -17,7 +17,9 @@ namespace SignageLivePlayerFrontEnd.Services
                 // Deserialize token and create an authentication cookie
                 var jwtToken = tokenHandler.ReadJwtToken(trimmedToken);
 
-                var identity = new ClaimsIdentity(jwtToken.Claims, "Signage_Live");
+                var claims = jwtToken.Claims;
+
+                var identity = new ClaimsIdentity(claims, "Signage_Live");
 
                 var principal = new ClaimsPrincipal(identity);
 

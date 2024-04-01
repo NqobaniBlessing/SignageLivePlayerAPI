@@ -17,7 +17,7 @@ namespace SignageLivePlayerAPI.Services
             _userService = userService;
             _configuration = configuration;
         }
-
+        
         public string CreateJwtToken(UserAuthDTO userDTO)
         {
             var claims = new List<Claim>();
@@ -38,11 +38,13 @@ namespace SignageLivePlayerAPI.Services
                 }
 
                 // Extract a user friendly user name from the company email address
-                var userName = claims.FirstOrDefault(c => c.Type.Equals("email"))?.Value;
-                userName = userName.Split(new[] { '@' })[0];
-                userName = char.ToUpper(userName[0]) + userName[1..];
+                var emailClaim = claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))?.Value;
+                var userName = emailClaim == null ? emailClaim : emailClaim.Split(new[] { '@' })[0];
+                
+                if (!string.IsNullOrEmpty(userName))
+                    userName = char.ToUpper(userName[0]) + userName[1..];
 
-                claims.Add(new Claim(ClaimTypes.Name, userName));
+                claims.Add(new Claim(ClaimTypes.Name, userName ?? string.Empty));
 
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
