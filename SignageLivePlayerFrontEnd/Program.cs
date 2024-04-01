@@ -1,5 +1,6 @@
 using SignageLivePlayerFrontEnd.Services;
 using SignageLivePlayerFrontEnd.Services.Interfaces;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,14 @@ builder.Services.AddAuthentication("Signage_Live")
         options.ExpireTimeSpan = TimeSpan.FromSeconds(200);
         options.Cookie.HttpOnly = true;
     });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CreatePlayer", policy =>
+    {
+        policy.RequireClaim(ClaimTypes.Role, "Software Developer", "Content Manager");       
+    });
+});
 
 builder.Services.AddSession();
 builder.Services.AddHttpClient("sl_client", client =>

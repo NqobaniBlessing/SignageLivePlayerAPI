@@ -20,7 +20,7 @@
   "Password": "7C5757F29814A631F5E1811AA1A861149CE2C2BBFF9F15995A6495C5AA8FB3CE366741A0D57C4DC447B1DB13B136D66FF6AEE58B9F287DDCCCD1C22D9496AEBF",
   "Claims": {
     "id": "fe0941d8-1eac-49e9-bbe6-16ed137f92c9",
-    "email": "neil@signagelive.com",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress": "neil@signagelive.com",
     "jti": "05cf1f3e-0ff4-44de-8b6a-1758bc7ebcb0",
     "admin": "false",
     "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "user"

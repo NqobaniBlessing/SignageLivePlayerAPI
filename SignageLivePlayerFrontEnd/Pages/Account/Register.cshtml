@@ -2,7 +2,7 @@
 @model SignageLivePlayerFrontEnd.Pages.Account.RegisterModel
 @{
     <div style="margin: 20px auto; width: 300px">
-        <h1>Register</h1>
+        <h1 style="text-align: center">Register</h1>
         <form method="post" asp-page-handler="OnPostAsync">
             <div class="form-group">
                 <label asp-for="NewUser.UserName">Username:</label>
@@ -30,7 +30,7 @@
             }
             </div>
             <br />
-          <button class="btn btn-primary" type="submit">Login</button>
+          <button class="btn btn-primary" type="submit" style="width: 300px">Register</button>
        </form>
     </div>
 }

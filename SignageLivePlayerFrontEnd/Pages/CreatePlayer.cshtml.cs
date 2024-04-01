@@ -5,9 +5,11 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
 using SignageLivePlayerFrontEnd.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SignageLivePlayerFrontEnd.Pages
 {
+    [Authorize(Policy = "CreatePlayer")]
     public class CreatePlayerModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
