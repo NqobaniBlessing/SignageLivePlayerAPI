@@ -18,9 +18,9 @@ namespace SignageLivePlayerFrontEnd.Services
                 var jwtToken = tokenHandler.ReadJwtToken(trimmedToken);
 
                 var claims = jwtToken.Claims.ToList();
-                var name = claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
+                var name = claims.FirstOrDefault(c => c.Type.Equals("unique_name"))?.Value;
 
-                claims.Add(new (ClaimTypes.Name, name));
+                claims.Add(new (ClaimTypes.Name, name ?? string.Empty));
 
                 var identity = new ClaimsIdentity(claims, "Signage_Live");
 
